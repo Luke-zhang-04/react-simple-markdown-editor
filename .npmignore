@@ -104,4 +104,8 @@ dist
 .tern-port
 
 # Custom
-lib/
+src/
+.editorconfig
+.eslint*
+tsconfig.json
+yarn.lock
