@@ -340,11 +340,21 @@ export class Editor extends React.Component<Props, State> {
                 })
             }
         } else if (e.key === Keys.enter) {
-        // Ignore selections
+            // Ignore selections
             if (selectionStart === selectionEnd) {
                 // Get the current line
                 const line = this._getLines(value, selectionStart).pop() ?? "",
-                    matches = line.match(/^\s+/u)
+                    matches = line.match(/^\s+/u),
+
+                    /**
+                     * Match markdown lists after whitespace
+                     * To put the Regex in simple words, after possible whitespace,
+                     * test for either ordered list bullets ("1"., "2."", etc)
+                     * or for unordered list bullets ("*", "+", or "-")
+                     */
+                    listBullets = line.match(/^\s*?([0-9]+\.|\*|\+|-)/u)
+
+                console.log(listBullets)
 
                 if (matches && matches[0]) {
                     e.preventDefault()
@@ -358,6 +368,32 @@ export class Editor extends React.Component<Props, State> {
                         value:
                             value.substring(0, selectionStart) +
                             indent +
+                            value.substring(selectionEnd),
+                        // Update caret position
+                        selectionStart: updatedSelection,
+                        selectionEnd: updatedSelection,
+                    })
+                }
+
+                if (listBullets && listBullets[0]) { // Add new list item
+                    e.preventDefault()
+
+                    let [bullet] = listBullets
+                    const updatedSelection = selectionStart + bullet.length + 4,
+                        numberBullet = Number(bullet.replace(/\./gui, ""))
+
+                    console.log(numberBullet, bullet.replace(/\./gui, ""))
+
+                    // If numbered or ordered list, try and get the next item
+                    if (!isNaN(numberBullet) && numberBullet > 0) {
+                        bullet = `${bullet.match(/\s/gu)?.join("") ?? ""}${numberBullet + 1}.`
+                    }
+
+                    this._applyEdits({
+                        // Insert indentation character at caret
+                        value: // eslint-disable-next-line
+                            value.substring(0, selectionStart) +
+                            `\n${bullet} ` + // Add newline, bullet, then space
                             value.substring(selectionEnd),
                         // Update caret position
                         selectionStart: updatedSelection,
