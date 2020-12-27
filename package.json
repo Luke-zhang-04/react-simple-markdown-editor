@@ -1,6 +1,6 @@
 {
   "name": "@luke-zhang-04/react-simple-markdown-editor",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A markdown editor component based off of satya164/react-simple-code-editor",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
