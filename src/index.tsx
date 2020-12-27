@@ -20,6 +20,13 @@ import React from "react"
 
 export type {Props}
 
+/**
+ * React Simple Markdown Editor
+ * A simple markdown editor component with syntax highlighting based off
+ * of [satya164/react-simple-code-editor](https://github.com/satya164/react-simple-code-editor)
+ * @see {@link https://github.com/Luke-zhang-04/react-simple-markdown-editor}
+ * @
+ */
 export class Editor extends React.Component<Props, State> {
 
     public static defaultProps = {
