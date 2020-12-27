@@ -4,7 +4,7 @@
  * @author Luke Zhang https://luke-zhang-04.github.io
  *
  * @copyright 2018 - 2019 satya164, 2020 Luke Zhang
- * @version 1.0.4
+ * @version 1.0.5
  */
 
 /**
@@ -21,7 +21,7 @@ export type Props = React.DetailedHTMLProps<
      * Must be a [controlled prop](https://reactjs.org/docs/forms.html#controlled-components)
      */
     value: string,
-    
+
     /**
      * Callback that is called when the textarea value changes.
      * Can't be `onChange`, because that name is taken
