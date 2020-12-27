@@ -10,6 +10,13 @@ A simple markdown editor component with syntax highlighting based off of [satya1
 
 - I looked, and nothing supports BOTH of the above features, which is unfourtunate
 
+## Features
+- Mirrored "(", "[", "{", "'", "\"" when typed (i.e when user types "{", an new "}" is automatically created)
+- List bullets on newlines
+- Highlighted to your theme (the feature is no feature)
+
+## Usage
+
 You need to use the editor with a third party library which provides syntax highlighting. For example, it'll look like following with [`prismjs`](https://prismjs.com):
 
 ```tsx
@@ -44,13 +51,13 @@ class App extends React.Component<Record<string, unknown>, {code: string}> {
 }
 ```
 
-### Result
+#### Result
 Note this example was themes with Prismjs, so your colours may end up being different
 ![screenshot](./assets/screenshot.png)
 
 Note that depending on your syntax highlighter, you might have to include additional CSS for syntax highlighting to work.
 
-## Props
+### Props
 
 The editor accepts all the props accepted by `textarea`. In addition, you can pass the following props:
 
