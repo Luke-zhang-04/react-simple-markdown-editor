@@ -6,3 +6,5 @@
 **/functions/lib/*
 **/*.d.ts
 /src/serviceWorker.ts
+*.js
+*.jsx
