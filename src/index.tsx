@@ -64,7 +64,7 @@ const keycodes = {
 }
 `
 
-export default class Editor extends React.Component<Props, State> {
+export class Editor extends React.Component<Props, State> {
 
     public static defaultProps = {
         tabSize: 2,
@@ -188,7 +188,7 @@ export default class Editor extends React.Component<Props, State> {
         input.selectionStart = record.selectionStart
         input.selectionEnd = record.selectionEnd
 
-        this.props.onChange(record.value)
+        this.props.onValueChange(record.value)
     }
 
     private _applyEdits = (record: Record): void => {
@@ -499,7 +499,7 @@ export default class Editor extends React.Component<Props, State> {
             true,
         )
 
-        this.props.onChange(value)
+        this.props.onValueChange(value)
     }
     /* eslint-enable id-length */
 
@@ -668,3 +668,5 @@ const styles = {
         overflowWrap: "break-word",
     },
 }
+
+export default Editor

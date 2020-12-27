@@ -16,7 +16,7 @@ export type Props = React.DetailedHTMLProps<
 > & {
     // Props for the component
     value: string,
-    onChange: (value: string)=> void,
+    onValueChange: (value: string)=> void,
     highlight: (value: string)=> string | React.ReactNode,
     tabSize?: number,
     shouldInsertSpaces?: boolean,
