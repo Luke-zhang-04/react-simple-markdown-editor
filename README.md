@@ -1,5 +1,7 @@
 # React Simple Markdown Editor
 
+[![NPM](https://nodei.co/npm/@luke-zhang-04/react-simple-markdown-editor.png)](https://nodei.co/npm/@luke-zhang-04/react-simple-markdown-editor/)
+
 A simple markdown editor component with syntax highlighting based off of [satya164/react-simple-code-editor](https://github.com/satya164/react-simple-code-editor)
 
 ## Why?
