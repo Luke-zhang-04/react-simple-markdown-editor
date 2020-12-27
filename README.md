@@ -61,6 +61,10 @@ The editor accepts all the props accepted by `textarea`. In addition, you can pa
 - `textareaClassName` (`string`): A className for the underlying `textarea`, can be useful for more precise control of its styles.
 - `preClassName` (`string`): A className for the underlying `pre`, can be useful for more precise control of its styles.
 
+### Types
+
+Type definitions are exported in `index.d.ts` as `Props`
+
 ## How it works
 
 It works by overlaying a syntax highlighted `<pre>` block over a `<textarea>`. When you type, select, copy text etc., you interact with the underlying `<textarea>`, so the experience feels native. This is a very simple approach compared to other editors which re-implement the behaviour.

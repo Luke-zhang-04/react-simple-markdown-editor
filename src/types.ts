@@ -8,7 +8,7 @@
  */
 
 /**
- * Props for the editor component
+ * Props for the `Editor` component
  * @typedef
  */
 export type Props = React.DetailedHTMLProps<
@@ -105,19 +105,4 @@ export type Props = React.DetailedHTMLProps<
      * control of its styles
      */
     preClassName?: string,
-}
-
-export type State = {
-  capture: boolean,
-}
-
-export type Record = {
-  value: string,
-  selectionStart: number,
-  selectionEnd: number,
-}
-
-export type History = {
-  stack: (Record & { timestamp: number })[],
-  offset: number,
 }

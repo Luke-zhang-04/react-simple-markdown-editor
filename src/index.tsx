@@ -7,7 +7,6 @@
  * @version 1.0.4
  */
 
-import type {History, Props, Record, State} from "./types"
 import {
     HistoryPresets,
     Keys,
@@ -16,16 +15,32 @@ import {
     isMacLike,
     isWindows,
 } from "./constants"
+import type {Props} from "./types"
 import React from "react"
 
 export type {Props}
+
+
+type State = {
+    capture: boolean,
+}
+
+type Record = {
+    value: string,
+    selectionStart: number,
+    selectionEnd: number,
+}
+
+type History = {
+    stack: (Record & { timestamp: number })[],
+    offset: number,
+}
 
 /**
  * React Simple Markdown Editor
  * A simple markdown editor component with syntax highlighting based off
  * of [satya164/react-simple-code-editor](https://github.com/satya164/react-simple-code-editor)
  * @see {@link https://github.com/Luke-zhang-04/react-simple-markdown-editor}
- * @
  */
 export class Editor extends React.Component<Props, State> {
 
