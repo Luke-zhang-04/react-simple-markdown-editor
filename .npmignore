@@ -105,6 +105,7 @@ dist
 
 # Custom
 .github
+assets
 src/
 .editorconfig
 .eslint*

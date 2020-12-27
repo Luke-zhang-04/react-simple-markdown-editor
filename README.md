@@ -44,6 +44,10 @@ class App extends React.Component<Record<string, unknown>, {code: string}> {
 }
 ```
 
+### Result
+Note this example was themes with Prismjs, so your colours may end up being different
+![screenshot](./assets/screenshot.png)
+
 Note that depending on your syntax highlighter, you might have to include additional CSS for syntax highlighting to work.
 
 ## Props
