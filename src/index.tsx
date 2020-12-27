@@ -8,61 +8,17 @@
  */
 
 import type {History, Props, Record, State} from "./types"
+import {
+    HistoryPresets,
+    Keys,
+    className,
+    cssText,
+    isMacLike,
+    isWindows,
+} from "./constants"
 import React from "react"
 
-export type {Props} from "./types"
-
-/* eslint-disable no-magic-numbers, id-length */
-const keycodes = {
-        enter: "Enter",
-        tab: "Tab",
-        backspace: "Backspace",
-        y: "y",
-        z: "z",
-        m: "m",
-        parens: "(",
-        brackets: "{",
-        quote: "\"",
-        escape: "Escape",
-    },
-    /* eslint-enable no-magic-numbers, id-length */
-
-    historyLimit = 100,
-    historyTimeGap = 3000,
-
-    isWindows = "navigator" in global && (/Win/ui).test(navigator.platform),
-    isMacLike = "navigator" in global && (/(Mac|iPhone|iPod|iPad)/ui).test(navigator.platform),
-
-    className = "npm__react-simple-code-editor__textarea",
-
-    cssText = /* CSS */ `
-/**
- * Reset the text fill color so that placeholder is visible
- */
-.${className}:empty {
-  -webkit-text-fill-color: inherit !important;
-}
-
-/**
- * Hack to apply on some CSS on IE10 and IE11
- */
-@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-  /**
-
-   * IE doesn't support '-webkit-text-fill-color'
-    * So we use 'color: transparent' to make the text transparent on IE
-    * Unlike other browsers, it doesn't affect caret color in IE
-    */
-  .${className} {
-    color: transparent !important;
-  }
-
-  .${className}::selection {
-    background-color: #accef7 !important;
-    color: transparent !important;
-  }
-}
-`
+export type {Props}
 
 export class Editor extends React.Component<Props, State> {
 
@@ -123,8 +79,8 @@ export class Editor extends React.Component<Props, State> {
             // Limit the number of operations to 100
             const count = this._history.stack.length
 
-            if (count > historyLimit) {
-                const extras = count - historyLimit
+            if (count > HistoryPresets.historyLimit) {
+                const extras = count - HistoryPresets.historyLimit
 
                 this._history.stack = stack.slice(extras, count)
                 this._history.offset = Math.max(this._history.offset - extras, 0)
@@ -134,7 +90,10 @@ export class Editor extends React.Component<Props, State> {
         const timestamp = Date.now()
 
         if (overwrite) {
-            const last = this._history.stack[this._history.offset]
+            const last = this._history.stack[this._history.offset],
+
+                /* eslint-disable-next-line */ // Can't destucture const enums
+                historyTimeGap = HistoryPresets.historyTimeGap
 
             if (last && timestamp - last.timestamp < historyTimeGap) {
                 // A previous entry exists and was in short interval
@@ -259,7 +218,7 @@ export class Editor extends React.Component<Props, State> {
             return
         }
 
-        if (e.key === keycodes.escape) {
+        if (e.key === Keys.escape) {
             e.target.blur()
         }
 
@@ -268,7 +227,7 @@ export class Editor extends React.Component<Props, State> {
             tabCharacter = (shouldInsertSpaces ? " " : "\t").repeat(tabSize ?? 2)
 
         if (
-            e.key === keycodes.tab &&
+            e.key === Keys.tab &&
             !shouldIgnoreTabKey &&
             this.state.capture
         ) {
@@ -359,7 +318,7 @@ export class Editor extends React.Component<Props, State> {
                     selectionEnd: updatedSelection,
                 })
             }
-        } else if (e.key === keycodes.backspace) {
+        } else if (e.key === Keys.backspace) {
             const hasSelection = selectionStart !== selectionEnd,
                 textBeforeCaret = value.substring(0, selectionStart)
 
@@ -380,7 +339,7 @@ export class Editor extends React.Component<Props, State> {
                     selectionEnd: updatedSelection,
                 })
             }
-        } else if (e.key === keycodes.enter) {
+        } else if (e.key === Keys.enter) {
         // Ignore selections
             if (selectionStart === selectionEnd) {
                 // Get the current line
@@ -407,26 +366,24 @@ export class Editor extends React.Component<Props, State> {
                 }
             }
         } else if (
-            e.key === keycodes.parens ||
-            e.key === keycodes.brackets ||
-            e.key === keycodes.quote
+            e.key === Keys.parens ||
+            e.key === Keys.brackets ||
+            e.key === Keys.quote ||
+            e.key === Keys.singleQuote ||
+            e.key === Keys.squareBrackets
         ) {
-            let chars
+            let chars: [start: string, end: string] | undefined
 
-            if (e.key === keycodes.parens && e.shiftKey) {
+            if (e.key === Keys.parens) {
                 chars = ["(", ")"]
-            } else if (e.key === keycodes.brackets) {
-                if (e.shiftKey) {
-                    chars = ["{", "}"]
-                } else {
-                    chars = ["[", "]"]
-                }
-            } else if (e.key === keycodes.quote) {
-                if (e.shiftKey) {
-                    chars = ["\"", "\""]
-                } else {
-                    chars = ["'", "'"]
-                }
+            } else if (e.key === Keys.brackets) {
+                chars = ["{", "}"]
+            } else if (e.key === Keys.quote) {
+                chars = ["\"", "\""]
+            } else if (e.key === Keys.singleQuote) {
+                chars = ["'", "'"]
+            } else if (e.key === Keys.squareBrackets) {
+                chars = ["[", "]"]
             }
 
             // If text is selected, wrap them in the characters
@@ -444,11 +401,19 @@ export class Editor extends React.Component<Props, State> {
                     selectionStart,
                     selectionEnd: selectionEnd + 2,
                 })
+            } else if (chars) { // Otherwise, just duplicate the characters
+                this._applyEdits({
+                    value: value.substring(0, selectionStart) +
+                        chars.join("") +
+                        value.substring(selectionEnd),
+                    selectionStart,
+                    selectionEnd: selectionEnd + 1,
+                })
             }
         } else if (
             (isMacLike
-                ? e.metaKey && e.key === keycodes.z // Trigger undo with ⌘+Z on Mac
-                : e.ctrlKey && e.key === keycodes.z) && // Trigger undo with Ctrl+Z on other platforms
+                ? e.metaKey && e.key === Keys.z // Trigger undo with ⌘+Z on Mac
+                : e.ctrlKey && e.key === Keys.z) && // Trigger undo with Ctrl+Z on other platforms
             !e.shiftKey &&
             !e.altKey
         ) {
@@ -457,17 +422,17 @@ export class Editor extends React.Component<Props, State> {
             this._undoEdit()
         } else if (
             (isMacLike
-                ? e.metaKey && e.key === keycodes.z && e.shiftKey // Trigger redo with ⌘+Shift+Z on Mac
+                ? e.metaKey && e.key === Keys.z && e.shiftKey // Trigger redo with ⌘+Shift+Z on Mac
                 : isWindows
-                    ? e.ctrlKey && e.key === keycodes.y // Trigger redo with Ctrl+Y on Windows
-                    : e.ctrlKey && e.key === keycodes.z && e.shiftKey) && // Trigger redo with Ctrl+Shift+Z on other platforms
+                    ? e.ctrlKey && e.key === Keys.y // Trigger redo with Ctrl+Y on Windows
+                    : e.ctrlKey && e.key === Keys.z && e.shiftKey) && // Trigger redo with Ctrl+Shift+Z on other platforms
             !e.altKey
         ) {
             e.preventDefault()
 
             this._redoEdit()
         } else if (
-            e.key === keycodes.m &&
+            e.key === Keys.m &&
             e.ctrlKey &&
             (isMacLike ? e.shiftKey : true)
         ) {
