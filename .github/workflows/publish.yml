@@ -2,7 +2,7 @@
 name: Publish to package
 on:
   release:
-      types: [publish]
+    types: [created]
 
 jobs:
   publish:
