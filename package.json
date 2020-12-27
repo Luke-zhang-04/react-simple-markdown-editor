@@ -1,13 +1,13 @@
 {
   "name": "@luke-zhang-04/react-simple-markdown-editor",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A markdown editor component based off of satya164/react-simple-code-editor",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublishOnly": "yarn tsc && yarn babel --out-dir lib lib/*.js"
+    "prepublishOnly": "yarn tsc"
   },
   "repository": {
     "type": "git",
@@ -22,9 +22,6 @@
   "homepage": "https://github.com/Luke-zhang-04/react-simple-markdown-editor#readme",
   "dependencies": {},
   "devDependencies": {
-    "@babel/cli": "^7.12.10",
-    "@babel/core": "^7.12.10",
-    "@babel/preset-env": "^7.12.11",
     "@types/node": "^14.14.16",
     "@types/react": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^4.11.0",
