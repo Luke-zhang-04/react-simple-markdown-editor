@@ -1,0 +1,27 @@
+
+name: Publish to package
+on:
+  release:
+      types: [publish]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '14.x'
+        registry-url: 'https://registry.npmjs.org'
+
+    - name: install deps
+      run: yarn install --frozen-lockfile
+
+    # No need to build. Build is executed before publish automatically
+
+    - name: publish to NPM
+      # Don't fail if version already exists
+      run: yarn publish --access public || echo "Version already published" && exit 0
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
