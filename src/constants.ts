@@ -35,6 +35,7 @@ export const wrappingKeys: {[key: string]: [start: string, end?: string]} = {
     singleQuote: ["'"],
     asterix: ["*"],
     tide: ["~"],
+    underscore: ["_"],
 }
 
 // Somehow stuff in enums are magic numbers
