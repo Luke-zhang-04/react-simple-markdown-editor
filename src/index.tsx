@@ -9,11 +9,12 @@
 
 import {
     HistoryPresets,
-    Keys,
+    SpecialKeys,
     className,
     cssText,
     isMacLike,
     isWindows,
+    wrappingKeys,
 } from "./constants"
 import type {Props} from "./types"
 import React from "react"
@@ -240,7 +241,7 @@ export class Editor extends React.Component<Props, State> {
             return
         }
 
-        if (e.key === Keys.escape) {
+        if (e.key === SpecialKeys.escape) {
             e.target.blur()
         }
 
@@ -249,7 +250,7 @@ export class Editor extends React.Component<Props, State> {
             tabCharacter = (shouldInsertSpaces ? " " : "\t").repeat(tabSize ?? 2)
 
         if (
-            e.key === Keys.tab &&
+            e.key === SpecialKeys.tab &&
             !shouldIgnoreTabKey &&
             this.state.capture
         ) {
@@ -340,7 +341,7 @@ export class Editor extends React.Component<Props, State> {
                     selectionEnd: updatedSelection,
                 })
             }
-        } else if (e.key === Keys.backspace) {
+        } else if (e.key === SpecialKeys.backspace) {
             const hasSelection = selectionStart !== selectionEnd,
                 textBeforeCaret = value.substring(0, selectionStart)
 
@@ -361,7 +362,7 @@ export class Editor extends React.Component<Props, State> {
                     selectionEnd: updatedSelection,
                 })
             }
-        } else if (e.key === Keys.enter) {
+        } else if (e.key === SpecialKeys.enter) {
             // Ignore selections
             if (selectionStart === selectionEnd) {
                 // Get the current line
@@ -421,25 +422,14 @@ export class Editor extends React.Component<Props, State> {
                 }
             }
         } else if (
-            e.key === Keys.parens ||
-            e.key === Keys.brackets ||
-            e.key === Keys.quote ||
-            e.key === Keys.singleQuote ||
-            e.key === Keys.squareBrackets
+            Object.values(wrappingKeys)
+                .map((key) => key[0])
+                .includes(e.key)
         ) {
-            let chars: [start: string, end: string] | undefined
-
-            if (e.key === Keys.parens) {
-                chars = ["(", ")"]
-            } else if (e.key === Keys.brackets) {
-                chars = ["{", "}"]
-            } else if (e.key === Keys.quote) {
-                chars = ["\"", "\""]
-            } else if (e.key === Keys.singleQuote) {
-                chars = ["'", "'"]
-            } else if (e.key === Keys.squareBrackets) {
-                chars = ["[", "]"]
-            }
+            const chars: [start: string, end: string] | undefined =
+                Object.values(wrappingKeys)
+                    .map((key): [string, string] => [key[0], key[1] ?? key[0]])
+                    .find((key) => e.key === key[0])
 
             // If text is selected, wrap them in the characters
             if (selectionStart !== selectionEnd && chars) {
@@ -467,8 +457,8 @@ export class Editor extends React.Component<Props, State> {
             }
         } else if (
             (isMacLike
-                ? e.metaKey && e.key === Keys.z // Trigger undo with ⌘+Z on Mac
-                : e.ctrlKey && e.key === Keys.z) && // Trigger undo with Ctrl+Z on other platforms
+                ? e.metaKey && e.key === SpecialKeys.z // Trigger undo with ⌘+Z on Mac
+                : e.ctrlKey && e.key === SpecialKeys.z) && // Trigger undo with Ctrl+Z on other platforms
             !e.shiftKey &&
             !e.altKey
         ) {
@@ -477,17 +467,17 @@ export class Editor extends React.Component<Props, State> {
             this._undoEdit()
         } else if (
             (isMacLike
-                ? e.metaKey && e.key === Keys.z && e.shiftKey // Trigger redo with ⌘+Shift+Z on Mac
+                ? e.metaKey && e.key === SpecialKeys.z && e.shiftKey // Trigger redo with ⌘+Shift+Z on Mac
                 : isWindows
-                    ? e.ctrlKey && e.key === Keys.y // Trigger redo with Ctrl+Y on Windows
-                    : e.ctrlKey && e.key === Keys.z && e.shiftKey) && // Trigger redo with Ctrl+Shift+Z on other platforms
+                    ? e.ctrlKey && e.key === SpecialKeys.y // Trigger redo with Ctrl+Y on Windows
+                    : e.ctrlKey && e.key === SpecialKeys.z && e.shiftKey) && // Trigger redo with Ctrl+Shift+Z on other platforms
             !e.altKey
         ) {
             e.preventDefault()
 
             this._redoEdit()
         } else if (
-            e.key === Keys.m &&
+            e.key === SpecialKeys.m &&
             e.ctrlKey &&
             (isMacLike ? e.shiftKey : true)
         ) {

@@ -14,19 +14,27 @@
 /**
  * Special keys to handle
  */
-export const enum Keys {
+export const enum SpecialKeys {
     enter = "Enter",
     tab = "Tab",
     backspace = "Backspace",
     y = "y",
     z = "z",
     m = "m",
-    parens = "(",
-    brackets = "{",
-    squareBrackets = "[",
-    quote = "\"",
-    singleQuote = "'",
     escape = "Escape",
+}
+
+/**
+ * Keys that wrap around selected text, or get duplicated
+ */
+export const wrappingKeys: {[key: string]: [start: string, end?: string]} = {
+    parens: ["(", ")"],
+    brackets: ["{", "}"],
+    squareBrackets: ["[", "]"],
+    quote: ["\""],
+    singleQuote: ["'"],
+    asterix: ["*"],
+    tide: ["~"],
 }
 
 // Somehow stuff in enums are magic numbers
