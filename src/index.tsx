@@ -376,8 +376,6 @@ export class Editor extends React.Component<Props, State> {
                      */
                     listBullets = line.match(/^\s*?([0-9]+\.|\*|\+|-)/u)
 
-                console.log(listBullets)
-
                 if (matches && matches[0]) {
                     e.preventDefault()
 
@@ -403,8 +401,6 @@ export class Editor extends React.Component<Props, State> {
                     let [bullet] = listBullets
                     const updatedSelection = selectionStart + bullet.length + 4,
                         numberBullet = Number(bullet.replace(/\./gui, ""))
-
-                    console.log(numberBullet, bullet.replace(/\./gui, ""))
 
                     // If numbered or ordered list, try and get the next item
                     if (!isNaN(numberBullet) && numberBullet > 0) {
