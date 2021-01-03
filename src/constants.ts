@@ -35,7 +35,6 @@ export const wrappingKeys: [start: string, end?: string][] = [
     ["'"],
     ["*"],
     ["~"],
-    ["_"],
 ]
 
 // Somehow stuff in enums are magic numbers
