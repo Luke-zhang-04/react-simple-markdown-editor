@@ -371,10 +371,11 @@ export class Editor extends React.Component<Props, State> {
                     /**
                      * Match markdown lists after whitespace
                      * To put the Regex in simple words, after possible whitespace,
-                     * test for either ordered list bullets ("1"., "2."", etc)
-                     * or for unordered list bullets ("*", "+", or "-")
+                     * test for either ordered list bullets (`1.`, `2.`, etc)
+                     * or for unordered list bullets (`*`, `+`, or `-`)
+                     * or for blockquotes `>`
                      */
-                    listBullets = line.match(/^\s*?([0-9]+\.|\*|\+|-)/u)
+                    listBullets = line.match(/^\s*?([0-9]+\.|\*|\+|-|>)/u)
 
                 if (matches && matches[0]) {
                     e.preventDefault()
