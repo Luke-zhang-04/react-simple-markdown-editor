@@ -400,7 +400,7 @@ export class Editor extends React.Component<Props, State> {
                     e.preventDefault()
 
                     let [bullet] = listBullets
-                    const updatedSelection = selectionStart + bullet.length + 4,
+                    const updatedSelection = selectionStart + bullet.length + 2,
                         numberBullet = Number(bullet.replace(/\./gui, ""))
 
                     // If numbered or ordered list, try and get the next item
