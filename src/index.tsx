@@ -421,15 +421,10 @@ export class Editor extends React.Component<Props, State> {
                     })
                 }
             }
-        } else if (
-            Object.values(wrappingKeys)
-                .map((key) => key[0])
-                .includes(e.key)
-        ) {
-            const chars: [start: string, end: string] | undefined =
-                Object.values(wrappingKeys)
-                    .map((key): [string, string] => [key[0], key[1] ?? key[0]])
-                    .find((key) => e.key === key[0])
+        } else if (wrappingKeys.map((key) => key[0]).includes(e.key)) {
+            const chars: [start: string, end: string] | undefined = wrappingKeys
+                .map((key): [string, string] => [key[0], key[1] ?? key[0]])
+                .find((key) => e.key === key[0])
 
             // If text is selected, wrap them in the characters
             if (selectionStart !== selectionEnd && chars) {

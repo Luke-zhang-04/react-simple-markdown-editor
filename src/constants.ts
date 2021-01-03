@@ -27,16 +27,16 @@ export const enum SpecialKeys {
 /**
  * Keys that wrap around selected text, or get duplicated
  */
-export const wrappingKeys: {[key: string]: [start: string, end?: string]} = {
-    parens: ["(", ")"],
-    brackets: ["{", "}"],
-    squareBrackets: ["[", "]"],
-    quote: ["\""],
-    singleQuote: ["'"],
-    asterix: ["*"],
-    tide: ["~"],
-    underscore: ["_"],
-}
+export const wrappingKeys: [start: string, end?: string][] = [
+    ["(", ")"],
+    ["{", "}"],
+    ["[", "]"],
+    ["\""],
+    ["'"],
+    ["*"],
+    ["~"],
+    ["_"],
+]
 
 // Somehow stuff in enums are magic numbers
 /* eslint-disable no-magic-numbers */
