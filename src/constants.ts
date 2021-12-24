@@ -59,8 +59,8 @@ export const enum HistoryPresets {
 /**
  * Checking for platforms
  */
-export const isWindows = "navigator" in global && (/Win/ui).test(navigator.platform),
-    isMacLike = "navigator" in global && (/(Mac|iPhone|iPod|iPad)/ui).test(navigator.platform)
+export const isWindows = "navigator" in globalThis && /Win/iu.test(navigator.userAgent),
+    isMacLike = "navigator" in globalThis && /(Mac|iPhone|iPod|iPad)/iu.test(navigator.userAgent)
 
 /**
  * Some CSS stuff
