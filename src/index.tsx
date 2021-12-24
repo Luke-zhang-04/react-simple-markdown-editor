@@ -1,11 +1,12 @@
 /**
  * React-simple-markdown-editor
  *
- * @author Luke Zhang https://luke-zhang-04.github.io
- *
- * @copyright 2018 - 2019 satya164, 2020 - 2021 Luke Zhang
  * @version 1.1.0
+ * @author Luke Zhang https://luke-zhang-04.github.io
+ * @copyright 2018 - 2019 satya164, 2020 - 2021 Luke Zhang
  */
+
+/* eslint-disable max-lines */
 
 import {
     HistoryPresets,
@@ -18,33 +19,32 @@ import {
 } from "./constants"
 import type {Props} from "./types"
 import React from "react"
+import {styles} from "./styles"
 
 export type {Props}
 
-
 type State = {
-    capture: boolean,
+    capture: boolean
 }
 
 type Record = {
-    value: string,
-    selectionStart: number,
-    selectionEnd: number,
+    value: string
+    selectionStart: number
+    selectionEnd: number
 }
 
 type History = {
-    stack: (Record & { timestamp: number })[],
-    offset: number,
+    stack: (Record & {timestamp: number})[]
+    offset: number
 }
 
 /**
- * React Simple Markdown Editor
- * A simple markdown editor component with syntax highlighting based off
- * of [satya164/react-simple-code-editor](https://github.com/satya164/react-simple-code-editor)
+ * React Simple Markdown Editor A simple markdown editor component with syntax highlighting based
+ * off of [satya164/react-simple-code-editor](https://github.com/satya164/react-simple-code-editor)
+ *
  * @see {@link https://github.com/Luke-zhang-04/react-simple-markdown-editor}
  */
 export class Editor extends React.Component<Props, State> {
-
     public static defaultProps = {
         tabSize: 2,
         shouldInsertSpaces: true,
@@ -59,12 +59,22 @@ export class Editor extends React.Component<Props, State> {
 
     private _input?: HTMLTextAreaElement
 
-    public constructor (props: Props) {
+    public constructor(props: Props) {
         super(props)
 
         this.state = {
             capture: true,
         }
+    }
+
+    public get session(): {history: History} {
+        return {
+            history: this._history,
+        }
+    }
+
+    public set session(session: {history: History}) {
+        this._history = session.history
     }
 
     public componentDidMount = (): void => {
@@ -88,9 +98,8 @@ export class Editor extends React.Component<Props, State> {
         })
     }
 
-    private _getLines = (text: string, position: number): string[] => (
+    private _getLines = (text: string, position: number): string[] =>
         text.substring(0, position).split("\n")
-    )
 
     private _recordChange = (record: Record, overwrite = false): void => {
         const {stack, offset} = this._history
@@ -113,32 +122,26 @@ export class Editor extends React.Component<Props, State> {
         const timestamp = Date.now()
 
         if (overwrite) {
-            const last = this._history.stack[this._history.offset],
-
-                /* eslint-disable-next-line */ // Can't destucture const enums
-                historyTimeGap = HistoryPresets.historyTimeGap
+            const last = this._history.stack[this._history.offset]
+            /* eslint-disable-next-line */ // Can't destucture const enums
+            const historyTimeGap = HistoryPresets.historyTimeGap
 
             if (last && timestamp - last.timestamp < historyTimeGap) {
                 // A previous entry exists and was in short interval
 
                 // Match the last word in the line
-                const re = /[^a-z0-9]([a-z0-9]+)$/ui,
-
-                    // Get the previous line
-                    previous = this._getLines(last.value, last.selectionStart)
-                        .pop()
-                        ?.match(re),
-
-                    // Get the current line
-                    current = this._getLines(record.value, record.selectionStart)
-                        .pop()
-                        ?.match(re)
+                const re = /[^a-z0-9]([a-z0-9]+)$/iu
+                // Get the previous line
+                const previous = this._getLines(last.value, last.selectionStart).pop()?.match(re)
+                // Get the current line
+                const current = this._getLines(record.value, record.selectionStart)
+                    .pop()
+                    ?.match(re)
 
                 if (previous && current && current?.[1]?.startsWith(previous?.[1] ?? "")) {
-
                     /**
-                     * The last word of the previous line and current line match
-                     * Overwrite previous entry so that undo will remove whole word
+                     * The last word of the previous line and current line match Overwrite previous
+                     * entry so that undo will remove whole word
                      */
                     this._history.stack[this._history.offset] = {
                         ...record,
@@ -175,8 +178,8 @@ export class Editor extends React.Component<Props, State> {
 
     private _applyEdits = (record: Record): void => {
         // Save last selection state
-        const input = this._input,
-            last = this._history.stack[this._history.offset]
+        const input = this._input
+        const last = this._history.stack[this._history.offset]
 
         if (last && input) {
             this._history.stack[this._history.offset] = {
@@ -192,26 +195,24 @@ export class Editor extends React.Component<Props, State> {
     }
 
     private _undoEdit = (): void => {
-        const {stack, offset} = this._history,
-
-            // Get the previous edit
-            record = stack[offset - 1]
+        const {stack, offset} = this._history
+        // Get the previous edit
+        const record = stack[offset - 1]
 
         if (record) {
-        // Apply the changes and update the offset
+            // Apply the changes and update the offset
             this._updateInput(record)
             this._history.offset = Math.max(offset - 1, 0)
         }
     }
 
     private _redoEdit = (): void => {
-        const {stack, offset} = this._history,
-
-            // Get the next edit
-            record = stack[offset + 1]
+        const {stack, offset} = this._history
+        // Get the next edit
+        const record = stack[offset + 1]
 
         if (record) {
-        // Apply the changes and update the offset
+            // Apply the changes and update the offset
             this._updateInput(record)
             this._history.offset = Math.min(offset + 1, stack.length - 1)
         }
@@ -219,15 +220,8 @@ export class Editor extends React.Component<Props, State> {
 
     // Too lazy to refactor all this code so I'll just leave most of it
     /* eslint-disable max-lines-per-function, complexity, max-statements, id-length, no-negated-condition, no-nested-ternary */
-    private _handleKeyDown = (
-        e: React.KeyboardEvent<HTMLTextAreaElement>,
-    ): void => {
-        const {
-            tabSize,
-            shouldInsertSpaces,
-            shouldIgnoreTabKey,
-            onKeyDown,
-        } = this.props
+    private _handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>): void => {
+        const {tabSize, shouldInsertSpaces, shouldIgnoreTabKey, onKeyDown} = this.props
 
         if (onKeyDown) {
             onKeyDown(e)
@@ -245,37 +239,28 @@ export class Editor extends React.Component<Props, State> {
             e.target.blur()
         }
 
-        const {value, selectionStart, selectionEnd} = e.target,
+        const {value, selectionStart, selectionEnd} = e.target
+        const tabCharacter = (shouldInsertSpaces ? " " : "\t").repeat(tabSize ?? 2)
 
-            tabCharacter = (shouldInsertSpaces ? " " : "\t").repeat(tabSize ?? 2)
-
-        if (
-            e.key === SpecialKeys.tab &&
-            !shouldIgnoreTabKey &&
-            this.state.capture
-        ) {
+        if (e.key === SpecialKeys.tab && !shouldIgnoreTabKey && this.state.capture) {
             // Prevent focus change
             e.preventDefault()
 
             if (e.shiftKey) {
                 // Unindent selected lines
-                const linesBeforeCaret = this._getLines(value, selectionStart),
-                    startLine = linesBeforeCaret.length - 1,
-                    endLine = this._getLines(value, selectionEnd).length - 1,
-                    nextValue = value
-                        .split("\n")
-                        .map((line, i) => {
-                            if (
-                                i >= startLine &&
-                                i <= endLine &&
-                                line.startsWith(tabCharacter)
-                            ) {
-                                return line.substring(tabCharacter.length)
-                            }
+                const linesBeforeCaret = this._getLines(value, selectionStart)
+                const startLine = linesBeforeCaret.length - 1
+                const endLine = this._getLines(value, selectionEnd).length - 1
+                const nextValue = value
+                    .split("\n")
+                    .map((line, i) => {
+                        if (i >= startLine && i <= endLine && line.startsWith(tabCharacter)) {
+                            return line.substring(tabCharacter.length)
+                        }
 
-                            return line
-                        })
-                        .join("\n")
+                        return line
+                    })
+                    .join("\n")
 
                 if (value !== nextValue) {
                     const startLineText = linesBeforeCaret[startLine]
@@ -291,16 +276,15 @@ export class Editor extends React.Component<Props, State> {
                             ? selectionStart - tabCharacter.length
                             : selectionStart,
                         // Move the end cursor by total number of characters removed
-                        selectionEnd: selectionEnd -
-                            (value.length - nextValue.length),
+                        selectionEnd: selectionEnd - (value.length - nextValue.length),
                     })
                 }
             } else if (selectionStart !== selectionEnd) {
                 // Indent selected lines
-                const linesBeforeCaret = this._getLines(value, selectionStart),
-                    startLine = linesBeforeCaret.length - 1,
-                    endLine = this._getLines(value, selectionEnd).length - 1,
-                    startLineText = linesBeforeCaret[startLine] ?? ""
+                const linesBeforeCaret = this._getLines(value, selectionStart)
+                const startLine = linesBeforeCaret.length - 1
+                const endLine = this._getLines(value, selectionEnd).length - 1
+                const startLineText = linesBeforeCaret[startLine] ?? ""
 
                 this._applyEdits({
                     value: value
@@ -318,14 +302,12 @@ export class Editor extends React.Component<Props, State> {
                      * Move the start cursor by number of characters added in first line of selection
                      * Don't move it if it there was no text before cursor
                      */
-                    selectionStart: (/\S/u).test(startLineText)
+                    selectionStart: /\S/u.test(startLineText)
                         ? selectionStart + tabCharacter.length
                         : selectionStart,
 
                     // Move the end cursor by total number of characters added
-                    selectionEnd:
-                        selectionEnd +
-                        tabCharacter.length * (endLine - startLine + 1),
+                    selectionEnd: selectionEnd + tabCharacter.length * (endLine - startLine + 1),
                 })
             } else {
                 const updatedSelection = selectionStart + tabCharacter.length
@@ -342,8 +324,8 @@ export class Editor extends React.Component<Props, State> {
                 })
             }
         } else if (e.key === SpecialKeys.backspace) {
-            const hasSelection = selectionStart !== selectionEnd,
-                textBeforeCaret = value.substring(0, selectionStart)
+            const hasSelection = selectionStart !== selectionEnd
+            const textBeforeCaret = value.substring(0, selectionStart)
 
             if (textBeforeCaret.endsWith(tabCharacter) && !hasSelection) {
                 // Prevent default delete behaviour
@@ -354,9 +336,8 @@ export class Editor extends React.Component<Props, State> {
                 this._applyEdits({
                     // Remove tab character at caret
                     value:
-                        value.substring(
-                            0, selectionStart - tabCharacter.length,
-                        ) + value.substring(selectionEnd),
+                        value.substring(0, selectionStart - tabCharacter.length) +
+                        value.substring(selectionEnd),
                     // Update caret position
                     selectionStart: updatedSelection,
                     selectionEnd: updatedSelection,
@@ -366,24 +347,21 @@ export class Editor extends React.Component<Props, State> {
             // Ignore selections
             if (selectionStart === selectionEnd) {
                 // Get the current line
-                const line = this._getLines(value, selectionStart).pop() ?? "",
-                    matches = line.match(/^\s+/u),
+                const line = this._getLines(value, selectionStart).pop() ?? ""
+                const matches = line.match(/^\s+/u)
+                /**
+                 * Match markdown lists after whitespace To put the Regex in simple words, after
+                 * possible whitespace, test for either ordered list bullets (`1.`, `2.`, etc) or
+                 * for unordered list bullets (`*`, `+`, or `-`) or for blockquotes `>`
+                 */
+                const listBullets = line.match(/^\s*?([0-9]+\.|\*|\+|-|>)/u)
 
-                    /**
-                     * Match markdown lists after whitespace
-                     * To put the Regex in simple words, after possible whitespace,
-                     * test for either ordered list bullets (`1.`, `2.`, etc)
-                     * or for unordered list bullets (`*`, `+`, or `-`)
-                     * or for blockquotes `>`
-                     */
-                    listBullets = line.match(/^\s*?([0-9]+\.|\*|\+|-|>)/u)
-
-                if (matches && matches[0]) {
+                if (matches?.[0]) {
                     e.preventDefault()
 
                     // Preserve indentation on inserting a new line
-                    const indent = `\n${matches[0]}`,
-                        updatedSelection = selectionStart + indent.length
+                    const indent = `\n${matches[0]}`
+                    const updatedSelection = selectionStart + indent.length
 
                     this._applyEdits({
                         // Insert indentation character at caret
@@ -397,12 +375,13 @@ export class Editor extends React.Component<Props, State> {
                     })
                 }
 
-                if (listBullets && listBullets[0]) { // Add new list item
+                if (listBullets?.[0]) {
+                    // Add new list item
                     e.preventDefault()
 
                     let [bullet] = listBullets
-                    const updatedSelection = selectionStart + bullet.length + 2,
-                        numberBullet = Number(bullet.replace(/\./gui, ""))
+                    const updatedSelection = selectionStart + bullet.length + 2
+                    const numberBullet = Number(bullet.replace(/\./giu, ""))
 
                     // If numbered or ordered list, try and get the next item
                     if (!isNaN(numberBullet) && numberBullet > 0) {
@@ -411,10 +390,10 @@ export class Editor extends React.Component<Props, State> {
 
                     this._applyEdits({
                         // Insert indentation character at caret
-                        value: // eslint-disable-next-line
-                            value.substring(0, selectionStart) +
-                            `\n${bullet} ` + // Add newline, bullet, then space
-                            value.substring(selectionEnd),
+                        // eslint-disable-next-line
+                        value: `${value.substring(0, selectionStart)}\n${bullet} ${value.substring(
+                            selectionEnd,
+                        )}`, // Add newline, bullet, then space
                         // Update caret position
                         selectionStart: updatedSelection,
                         selectionEnd: updatedSelection,
@@ -441,9 +420,11 @@ export class Editor extends React.Component<Props, State> {
                     selectionStart,
                     selectionEnd: selectionEnd + 2,
                 })
-            } else if (chars) { // Otherwise, just duplicate the characters
+            } else if (chars) {
+                // Otherwise, just duplicate the characters
                 this._applyEdits({
-                    value: value.substring(0, selectionStart) +
+                    value:
+                        value.substring(0, selectionStart) +
                         chars.join("") +
                         value.substring(selectionEnd),
                     selectionStart,
@@ -464,18 +445,14 @@ export class Editor extends React.Component<Props, State> {
             (isMacLike
                 ? e.metaKey && e.key === SpecialKeys.z && e.shiftKey // Trigger redo with ⌘+Shift+Z on Mac
                 : isWindows
-                    ? e.ctrlKey && e.key === SpecialKeys.y // Trigger redo with Ctrl+Y on Windows
-                    : e.ctrlKey && e.key === SpecialKeys.z && e.shiftKey) && // Trigger redo with Ctrl+Shift+Z on other platforms
+                ? e.ctrlKey && e.key === SpecialKeys.y // Trigger redo with Ctrl+Y on Windows
+                : e.ctrlKey && e.key === SpecialKeys.z && e.shiftKey) && // Trigger redo with Ctrl+Shift+Z on other platforms
             !e.altKey
         ) {
             e.preventDefault()
 
             this._redoEdit()
-        } else if (
-            e.key === SpecialKeys.m &&
-            e.ctrlKey &&
-            (isMacLike ? e.shiftKey : true)
-        ) {
+        } else if (e.key === SpecialKeys.m && e.ctrlKey && (isMacLike ? e.shiftKey : true)) {
             e.preventDefault()
 
             // Toggle capturing tab key so users can focus away
@@ -486,9 +463,7 @@ export class Editor extends React.Component<Props, State> {
     }
     /* eslint-enable max-lines-per-function, complexity, max-statements, no-negated-condition, no-nested-ternary */
 
-    private _handleChange = (
-        e: React.ChangeEvent<HTMLTextAreaElement>,
-    ): void => {
+    private _handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
         if (!(e.target instanceof HTMLTextAreaElement)) {
             return
         }
@@ -508,78 +483,67 @@ export class Editor extends React.Component<Props, State> {
     }
     /* eslint-enable id-length */
 
-    public get session (): {history: History} {
-        return {
-            history: this._history,
-        }
-    }
-
-    public set session (session: { history: History }) {
-        this._history = session.history
-    }
-
     // Render should be placed last, couldn't be bothered to setup React eslint. Disabled naming conv. for `__html`
     /* eslint-disable max-lines-per-function, @typescript-eslint/member-ordering, @typescript-eslint/naming-convention */
     public render = (): JSX.Element => {
+        /* eslint-disable @typescript-eslint/no-unused-vars */
         const {
-                value,
-                style,
-                padding,
-                highlight,
-                textareaId,
-                textareaClassName,
-                shouldAutoFocus,
-                isDisabled,
-                form,
-                maxLength,
-                minLength,
-                name,
-                placeholder,
-                isReadOnly,
-                isRequired,
-                onClick,
-                onFocus,
-                onBlur,
-                onKeyUp,
-                /* eslint-disable no-unused-vars */
-                onKeyDown,
-                tabSize,
-                shouldInsertSpaces,
-                shouldIgnoreTabKey,
-                /* eslint-enable no-unused-vars */
-                preClassName,
-                ...rest
-            } = this.props,
+            value,
+            style,
+            padding,
+            highlight,
+            textareaId,
+            textareaClassName,
+            shouldAutoFocus,
+            isDisabled,
+            form,
+            maxLength,
+            minLength,
+            name,
+            placeholder,
+            isReadOnly,
+            isRequired,
+            onClick,
+            onFocus,
+            onBlur,
+            onKeyUp,
+            onKeyDown,
+            tabSize,
+            shouldInsertSpaces,
+            shouldIgnoreTabKey,
+            preClassName,
+            ...rest
+        } = this.props
+        /* eslint-enable @typescript-eslint/no-unused-vars */
 
-            contentStyle = {
-                paddingTop: padding,
-                paddingRight: padding,
-                paddingBottom: padding,
-                paddingLeft: padding,
-            },
-
-            highlighted = highlight(value)
+        const contentStyle = {
+            paddingTop: padding,
+            paddingRight: padding,
+            paddingBottom: padding,
+            paddingLeft: padding,
+        }
+        const highlighted = highlight(value)
 
         return (
             <div
                 {...rest}
-                style={{
-                    ...styles.container,
-                    ...style,
-                } as React.CSSProperties}
+                style={
+                    {
+                        ...styles.container,
+                        ...style,
+                    } as React.CSSProperties
+                }
             >
                 <textarea
-                    ref={(elem): HTMLTextAreaElement | void => (
-                        this._input = elem ?? undefined
-                    )}
-                    style={{
-                        ...styles.editor,
-                        ...styles.textarea,
-                        ...contentStyle,
-                    } as React.CSSProperties}
-                    className={
-                        className + (textareaClassName ? ` ${textareaClassName}` : "")
+                    ref={(elem): HTMLTextAreaElement | void => (this._input = elem ?? undefined)}
+                    style={
+                        {
+                            ...styles.editor,
+                            ...styles.textarea,
+                            ...contentStyle,
+                        } as React.CSSProperties
                     }
+                    className={className + (textareaClassName ? ` ${textareaClassName}` : "")}
                     id={textareaId}
                     value={value}
                     onChange={this._handleChange}
@@ -606,16 +570,16 @@ export class Editor extends React.Component<Props, State> {
                 <pre
                     className={preClassName}
                     aria-hidden="true"
-                    style={{
-                        ...styles.editor,
-                        ...styles.highlight,
-                        ...contentStyle,
-                    } as React.CSSProperties}
-                    {
-                        ...(typeof highlighted === "string"
-                            ? {dangerouslySetInnerHTML: {__html: `${highlighted}<br />`}}
-                            : {children: highlighted})
+                    style={
+                        {
+                            ...styles.editor,
+                            ...styles.highlight,
+                            ...contentStyle,
+                        } as React.CSSProperties
                     }
+                    {...(typeof highlighted === "string"
+                        ? {dangerouslySetInnerHTML: {__html: `${highlighted}<br />`}}
+                        : {children: highlighted})}
                 />
                 {/* eslint-disable-next-line */}
                 <style type="text/css" dangerouslySetInnerHTML={{__html: cssText}} />
@@ -623,55 +587,6 @@ export class Editor extends React.Component<Props, State> {
         )
     }
     /* eslint-enable max-lines-per-function, @typescript-eslint/member-ordering, @typescript-eslint/naming-convention */
-
-}
-
-const styles = {
-    container: {
-        position: "relative",
-        textAlign: "left",
-        boxSizing: "border-box",
-        padding: 0,
-        overflow: "hidden",
-    },
-    textarea: {
-        position: "absolute",
-        top: 0,
-        left: 0,
-        height: "100%",
-        width: "100%",
-        resize: "none",
-        color: "inherit",
-        overflow: "hidden",
-        MozOsxFontSmoothing: "grayscale",
-        WebkitFontSmoothing: "antialiased",
-        WebkitTextFillColor: "transparent",
-    },
-    highlight: {
-        position: "relative",
-        pointerEvents: "none",
-    },
-    editor: {
-        margin: 0,
-        border: 0,
-        background: "none",
-        boxSizing: "inherit",
-        display: "inherit",
-        fontFamily: "inherit",
-        fontSize: "inherit",
-        fontStyle: "inherit",
-        fontVariantLigatures: "inherit",
-        fontWeight: "inherit",
-        letterSpacing: "inherit",
-        lineHeight: "inherit",
-        tabSize: "inherit",
-        textIndent: "inherit",
-        textRendering: "inherit",
-        textTransform: "inherit",
-        whiteSpace: "pre-wrap",
-        wordBreak: "keep-all",
-        overflowWrap: "break-word",
-    },
 }
 
 export default Editor

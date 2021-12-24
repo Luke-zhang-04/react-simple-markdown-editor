@@ -1,12 +1,10 @@
 /**
  * React-simple-markdown-editor
  *
- * @author Luke Zhang https://luke-zhang-04.github.io
- *
- * @copyright 2018 - 2019 satya164, 2020 - 2021 Luke Zhang
  * @version 1.1.0
- *
- * @file constant values used by the main component
+ * @author Luke Zhang https://luke-zhang-04.github.io
+ * @file constant Values used by the main component
+ * @copyright 2018 - 2019 satya164, 2020 - 2021 Luke Zhang
  */
 
 // Eslint has a hard time with const enum apparently
@@ -31,7 +29,7 @@ export const wrappingKeys: [start: string, end?: string][] = [
     ["(", ")"],
     ["{", "}"],
     ["[", "]"],
-    ["\""],
+    ['"'],
     ["'"],
     ["*"],
     ["~"],
@@ -43,7 +41,6 @@ export const wrappingKeys: [start: string, end?: string][] = [
  * A bunch of history values to use
  */
 export const enum HistoryPresets {
-
     /**
      * Limit of history to keep
      */
@@ -52,22 +49,22 @@ export const enum HistoryPresets {
     /**
      * Time between two history keepings
      */
-    historyTimeGap = 3000
+    historyTimeGap = 3000,
 }
 /* eslint-enable no-shadow, no-magic-numbers */
 
 /**
  * Checking for platforms
  */
-export const isWindows = "navigator" in globalThis && /Win/iu.test(navigator.userAgent),
-    isMacLike = "navigator" in globalThis && /(Mac|iPhone|iPod|iPad)/iu.test(navigator.userAgent)
+export const isWindows = "navigator" in globalThis && /Win/iu.test(navigator.userAgent)
+export const isMacLike =
+    "navigator" in globalThis && /(Mac|iPhone|iPod|iPad)/iu.test(navigator.userAgent)
 
 /**
  * Some CSS stuff
  */
-export const className = "npm__react-simple-code-editor__textarea",
-
-    cssText = /* CSS */ `
+export const className = "npm__react-simple-code-editor__textarea"
+export const cssText = /* CSS */ `
 /**
  * Reset the text fill color so that placeholder is visible
  */

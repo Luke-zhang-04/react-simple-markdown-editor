@@ -1,4 +1,3 @@
-
 name: Publish to package
 on:
   release:
@@ -8,20 +7,24 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - uses: actions/setup-node@v1
-      with:
-        node-version: '14.x'
-        registry-url: 'https://registry.npmjs.org'
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "14.x"
+          registry-url: "https://registry.npmjs.org"
 
-    - name: install deps
-      run: yarn install --frozen-lockfile
+      - uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.10.3
 
-    # No need to build. Build is executed before publish automatically
+      - name: install deps
+        run: pnpm install --frozen-lockfile
 
-    - name: publish to NPM
-      # Don't fail if version already exists
-      run: yarn publish --access public || echo "Version already published" && exit 0
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # No need to build. Build is executed before publish automatically
+
+      - name: publish to NPM
+        # Don't fail if version already exists
+        run: pnpm publish --access public || echo "Version already published" && exit 0
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
