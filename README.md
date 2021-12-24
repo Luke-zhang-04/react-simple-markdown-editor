@@ -1,6 +1,7 @@
 # React Simple Markdown Editor
 
-[![NPM](https://nodei.co/npm/@luke-zhang-04/react-simple-markdown-editor.png)](https://nodei.co/npm/@luke-zhang-04/react-simple-markdown-editor/)
+[![NPM Version](https://img.shields.io/npm/v/@luke-zhang-04/react-simple-markdown-editor?style=flat-square)](https://www.npmjs.com/package/@luke-zhang-04/react-simple-markdown-editor)
+[![Minzipped size](https://img.shields.io/bundlephobia/minzip/@luke-zhang-04/react-simple-markdown-editor?style=flat-square)](https://bundlephobia.com/package/@luke-zhang-04/react-simple-markdown-editor@1.1.0)
 
 A simple markdown editor component with syntax highlighting based off of [satya164/react-simple-code-editor](https://github.com/satya164/react-simple-code-editor)
 
