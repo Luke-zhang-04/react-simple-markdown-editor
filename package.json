@@ -19,6 +19,12 @@
     "prepublishOnly": "pnpm tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files": [
+    "lib",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
   "keywords": [],
   "peerDependencies": {
     "react": "^17.0.1",
